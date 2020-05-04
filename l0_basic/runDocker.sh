@@ -1,4 +1,4 @@
-CTO_NAME="alpine-intuition/basic"
+CTO_NAME="alpineintuition/base"
 CTO_TAG="latest"
 
 docker run \

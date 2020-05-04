@@ -1,2 +1,2 @@
-docker build --tag="alpine-intuition/basic:latest" .
+docker build --tag="alpineintuition/base:latest" .
 
