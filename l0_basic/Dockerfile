@@ -6,8 +6,6 @@ ARG CUDNN=7
 FROM nvidia/cuda:${CUDA}-cudnn${CUDNN}-devel-ubuntu${UBUNTU_VERSION}
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG DETECTRON2_VERSION=0.1.1
-
 
 # Install packages and setup basics
 
@@ -51,6 +49,8 @@ RUN pip uninstall apex && \
 
 
 # Install detectron2 
+
+ARG DETECTRON2_VERSION=0.1.3
 
 RUN cd /opt && wget -qO- https://github.com/facebookresearch/detectron2/archive/v${DETECTRON2_VERSION}.tar.gz | tar xvz && \
     mv detectron2-${DETECTRON2_VERSION} detectron2 && \
