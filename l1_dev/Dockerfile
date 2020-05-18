@@ -1,4 +1,4 @@
-FROM alpine-intuition/basic:latest
+FROM alpineintuition/base:latest
 ARG UID
 ARG GID
 ARG USER_MAIL

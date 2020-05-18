@@ -4,7 +4,7 @@ USER_NAME="$(cat user_info | grep $UID | tr -s " " | cut -d " " -f 3)"
 echo "> ${USER_NAME} (${USER_MAIL})"
 
 docker build \
-    --tag="alpine-intuition/dev_$UID:latest" \
+    --tag="alpineintuition/dev_$UID:latest" \
     --build-arg UID=$UID \
     --build-arg GID=1010 \
     --build-arg USER_MAIL=$USER_MAIL \
