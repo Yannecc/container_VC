@@ -1,0 +1,6 @@
+NAME=ai-singularity-base
+
+singularity build \
+    --fakeroot \
+    $NAME.sif \
+    $NAME.def 
