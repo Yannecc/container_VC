@@ -13,6 +13,8 @@ while getopts "i:t:g:" opt; do
 done
 
 
+# Shared volumes
+
 PRETRAINED_MODELS_WEIGHTS="
     -v $HOME/.cache/torch:/home/user/.cache/torch 
     -v $HOME/.torch:/home/user/torch
@@ -22,16 +24,23 @@ DATASETS_FOLDERS="
     -v /opt/datasets:/opt/datasets
 "
 
+#SHELL=$(basename $SHELL)
+#SHELL_HISTORY="
+    #-e HIST_FILE='/home/user/.zsh_history'
+    #-v $HOME/.${SHELL}_history:/home/user/.${SHELL}_history
+#" #TODO fix "can't rename" issue
 
-ALPINE_INTUITION_FOLDER="
+OPTIONAL_FOLDERS="
     -v $HOME/alpine_intuition:/home/user/alpine_intuition
 "
 
 
-if [[ "$IMG_TO_RUN" == "dev" ]]; then
+# Check if image exist 
+
+if [[ "$IMG_TO_RUN" != "base" ]]; then
     IMG_TO_RUN=${IMG_TO_RUN}_$UID
 fi
-IMG="alpine-intuition/$IMG_TO_RUN"
+IMG="alpineintuition/$IMG_TO_RUN"
 
 
 if [ -z "$(docker images -q "$IMG":"$TAG_TO_USE")" ]; then
@@ -39,9 +48,6 @@ if [ -z "$(docker images -q "$IMG":"$TAG_TO_USE")" ]; then
     exit 1
 fi
 echo "Docker image to run: $IMG:$TAG_TO_USE"
-
-
-ALP_DEV_ID=1010
 
 
 # Define runtime and GPU(s) to use
@@ -60,10 +66,10 @@ if [[ "$NUM_GPUS" -gt 0 ]]; then
     fi
 
     if [ "$GPU_TO_USE" -eq -1 ]; then
-        echo "ALL GPU USED"
+        echo "Used GPU(s): all"
         GPU="all"
     else
-        echo "GPU #$GPU_TO_USE USED"
+        echo "Used GPU(s): #$GPU_TO_USE"
         GPU="device=${GPU_TO_USE}"
     fi
     RUNTIME="--runtime=nvidia --gpus $GPU"
@@ -73,14 +79,34 @@ else
 fi
 
 
+# User informations (only on dev img)
+
+if [[ "$IMG_TO_RUN" != "base" ]]; then
+    ALP_DEV_ID=1010
+    USER_ID="--user=${UID}_$ALP_DEV_ID"
+fi
+
+
+# Others informations 
+
+XSOCK=/tmp/.X11-unix #TODO check if really working
+
+
+# Start the container
+
 docker run \
     -it \
+    --rm \
     --ipc=host \
     --shm-size=30G \
-    --user=$UID:$ALP_DEV_ID \
+    $USER_ID \
+    -p 8888 \
+    -v $HOME/.bash_history:/home/user/.bash_history \
+    -v $XSOCK:/tmp/.X11-unix \
+    $SHELL_HISTORY \
     $RUNTIME \
     $PRETRAINED_MODELS_WEIGHTS \
     $DATASETS_FOLDERS \
-    $ALPINE_INTUITION_FOLDER \
+    $OPTIONAL_FOLDERS \
     $IMG \
-    /bin/bash
+    /bin/zsh
