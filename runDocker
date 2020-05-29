@@ -17,7 +17,7 @@ done
 
 PRETRAINED_MODELS_WEIGHTS="
     -v $HOME/.cache/torch:/home/user/.cache/torch 
-    -v $HOME/.torch:/home/user/torch
+    -v $HOME/.torch:/home/user/.torch
 "
 
 DATASETS_FOLDERS="
