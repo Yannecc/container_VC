@@ -101,7 +101,6 @@ docker run \
     --shm-size=30G \
     $USER_ID \
     -p 8888 \
-    -v $HOME/.bash_history:/home/user/.bash_history \
     -v $XSOCK:/tmp/.X11-unix \
     $SHELL_HISTORY \
     $RUNTIME \
