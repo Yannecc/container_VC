@@ -43,14 +43,13 @@ OPTIONAL_FOLDERS="
 if [[ "$IMG_TO_RUN" != "base" ]]; then
     IMG_TO_RUN=${IMG_TO_RUN}_$UID
 fi
-IMG="alpineintuition/$IMG_TO_RUN"
+IMG="alpineintuition/$IMG_TO_RUN:$TAG_TO_USE"
 
-
-if [ -z "$(docker images -q "$IMG":"$TAG_TO_USE")" ]; then
-    echo "The image '$IMG:$TAG_TO_USE' do not exist"
+if [ -z "$(docker images -q $IMG)" ]; then
+    echo "The image '$IMG' do not exist"
     exit 1
 fi
-echo "Docker image to run: $IMG:$TAG_TO_USE"
+echo "Docker image to run: $IMG"
 
 
 # Define runtime and GPU(s) to use
