@@ -56,3 +56,10 @@ RUN cd /opt && wget -qO- https://github.com/facebookresearch/detectron2/archive/
     mv detectron2-${DETECTRON2_VERSION} detectron2 && \
     cd detectron2 && pip install -e .
 ENV DETECTRON2_FOLDER=/opt/detectron2
+
+
+# Fix to make tensorflow working with cuda 10.2
+
+RUN ln -s /usr/local/cuda/lib64/libcudart.so.10.2 /usr/local/cuda/lib64/libcudart.so.10.1 && \
+	ln -s /usr/local/cuda/lib64/libcupti.so.10.2 /usr/local/cuda/lib64/libcupti.so.10.1 && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
