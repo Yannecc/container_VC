@@ -35,6 +35,7 @@ DATASETS_FOLDERS="
 
 OPTIONAL_FOLDERS="
     -v $HOME/alpine_intuition:/home/user/alpine_intuition
+    -v $HOME/.ssh:/home/user/.ssh
 "
 
 
