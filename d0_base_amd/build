@@ -1,6 +1,5 @@
-VIDEO_GID="$(cut -d: -f3 < <(getent group vedo))"
-
 docker build \
     --tag="alpineintuition/base_amd:latest" \
     --build-arg VIDEO_GID=$VIDEO_GID \
+    --output out \
     .
