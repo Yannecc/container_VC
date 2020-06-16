@@ -14,7 +14,7 @@ RUN apt-get update --fix-missing && \
 # Setup python
 
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt 
+RUN pip3 install -r requirements.txt && \
     echo 'alias python=python3.6' >> /root/.zshrc
 
 
