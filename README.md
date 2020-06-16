@@ -14,11 +14,14 @@ There is two different images available:
 - `base`:
 - `dev`:
 
+Before using an image, it must be compiled.
+
 The launching script `runDocker` can take three different parameters:
 - `-i` image type to use, by default at `dev`.
 - `-t` image tag, by default at `latest`.
 - `-g` GPU index to use, by default at `0`. To use all GPUs available, use `-1`.
 
+The script will automatically detect if there is an AMD or NVIDIA card. Note that it is not possible at the moment to choose which GPU to use via `runDocker` when using AMD cards.
 
 
 ## Singularity
