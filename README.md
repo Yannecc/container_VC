@@ -14,7 +14,7 @@ There is two different images available:
 - `base`:
 - `dev`:
 
-Before using an image, it must be compiled.
+Before using an image, it must be compiled. To do this, go to the associated folder and run the script `./build`
 
 The launching script `runDocker` can take three different parameters:
 - `-i` image type to use, by default at `dev`.
