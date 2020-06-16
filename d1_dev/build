@@ -1,3 +1,5 @@
+#!/bin/bash
+
 USER_MAIL="$(cat user_info | grep $UID | tr -s " " | cut -d " " -f 2)"
 USER_NAME="$(cat user_info | grep $UID | tr -s " " | cut -d " " -f 3)"
 
@@ -10,4 +12,3 @@ docker build \
     --build-arg USER_MAIL=$USER_MAIL \
     --build-arg USER_NAME=$USER_NAME \
     .
-

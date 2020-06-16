@@ -25,6 +25,7 @@ distlib==0.3.0
 dlib==19.19.0
 efficientnet-pytorch==0.6.1
 entrypoints==0.3
+face-alignment==1.0.0
 filelock==3.0.12
 flake8==3.7.9
 funcsigs==1.0.2
@@ -134,9 +135,8 @@ soupsieve==1.9.5
 tabulate==0.8.6
 tensorboard==2.0.2
 tensorboardX==2.0
-tensorflow==2.1.0
+tensorflow==2.2.0
 tensorflow-estimator==2.0.1
-tensorflow-gpu==2.0.0
 termcolor==1.1.0
 terminado==0.8.3
 test-tube==0.7.5
@@ -148,6 +148,7 @@ torchvision==0.6.0
 tornado==6.0.3
 tqdm==4.35.0
 traitlets==4.3.3
+transformers==2.10.0
 typed-ast==1.4.1
 typing-extensions==3.7.4.1
 urllib3==1.25.7

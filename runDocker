@@ -1,0 +1,118 @@
+#!/bin/bash
+
+IMG_TO_RUN="dev"
+TAG_TO_USE="latest"
+GPU_TO_USE=0
+while getopts "i:t:g:" opt; do
+  case ${opt} in
+    i ) IMG_TO_RUN=$OPTARG;;
+    t ) TAG_TO_USE=$OPTARG;;
+    g ) GPU_TO_USE=$OPTARG;;
+    \?) echo "Wrong usage: runDocker [-i] [-t] [-g]"; exit 1;;
+  esac
+done
+
+
+CONTAINER_NAME=${IMG_TO_RUN}_${TAG_TO_USE}_${UID}_${GPU_TO_USE}
+
+
+# Shared volumes
+
+PRETRAINED_MODELS_WEIGHTS="
+    -v $HOME/.cache/torch:/home/user/.cache/torch 
+    -v $HOME/.torch:/home/user/.torch
+"
+
+DATASETS_FOLDERS="
+    -v /opt/datasets:/opt/datasets
+"
+
+#SHELL=$(basename $SHELL)
+#SHELL_HISTORY="
+    #-e HIST_FILE='/home/user/.zsh_history'
+    #-v $HOME/.${SHELL}_history:/home/user/.${SHELL}_history
+#" #TODO fix "can't rename" issue
+
+OPTIONAL_FOLDERS="
+    -v $HOME/alpine_intuition:/home/user/alpine_intuition
+    -v $HOME/.ssh:/home/user/.ssh
+"
+
+
+# Check if image exist 
+
+if [[ "$IMG_TO_RUN" != "base" ]]; then
+    IMG_TO_RUN=${IMG_TO_RUN}_$UID
+fi
+IMG="alpineintuition/$IMG_TO_RUN:$TAG_TO_USE"
+
+if [ -z "$(docker images -q $IMG)" ]; then
+    echo "The image '$IMG' do not exist"
+    exit 1
+fi
+echo "Docker image to run: $IMG"
+
+
+# Define runtime and GPU(s) to use
+
+if ! [ -x "$(command -v lspci)" ]; then
+    echo "> 'lspci' package needed, please install it before run"
+    exit 1
+fi
+NUM_GPUS=$(lspci | grep -c "VGA.*NVIDIA")
+
+if [[ "$NUM_GPUS" -gt 0 ]]; then
+    if [[ $GPU_TO_USE -gt $NUM_GPUS-1 ]]; then
+        echo "You want use GPU #$GPU_TO_USE but there is" \
+            "only $NUM_GPUS GPUS available (indexing start at #0)."
+        exit 1
+    fi
+
+    if [ "$GPU_TO_USE" -eq -1 ]; then
+        echo "Used GPU(s): all"
+        GPU="all"
+    else
+        echo "Used GPU(s): #$GPU_TO_USE"
+        GPU="device=${GPU_TO_USE}"
+    fi
+    RUNTIME="--runtime=nvidia --gpus $GPU"
+else
+    RUNTIME=""
+    echo "No NVIDIA GPU found. Switching to standard runtime"
+fi
+
+
+# User informations (only on dev img)
+
+if [[ "$IMG_TO_RUN" != "base" ]]; then
+    ALP_DEV_ID=1010
+    USER_ID="--user=${UID}:$ALP_DEV_ID"
+fi
+
+
+# Others informations 
+
+XSOCK=/tmp/.X11-unix #TODO check if really working
+
+echo "Docker will start the container with a unused port." \
+    "To know the port: 'docker port $CONTAINER_NAME'"
+
+
+# Start the container
+
+docker run \
+    -it \
+    --rm \
+    --name $CONTAINER_NAME \
+    --ipc=host \
+    --shm-size=30G \
+    $USER_ID \
+    -p 8888 \
+    -v $XSOCK:/tmp/.X11-unix \
+    $SHELL_HISTORY \
+    $RUNTIME \
+    $PRETRAINED_MODELS_WEIGHTS \
+    $DATASETS_FOLDERS \
+    $OPTIONAL_FOLDERS \
+    $IMG \
+    /bin/zsh
