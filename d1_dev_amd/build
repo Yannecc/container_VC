@@ -1,5 +1,6 @@
 docker build \
-    --tag="alpineintuition/base_amd:latest" \
-    --build-arg VIDEO_GID=$VIDEO_GID \
+    --tag="alpineintuition/dev_amd_$UID:latest" \
+    --build-arg UID=$UID \
+    --build-arg GID=1010 \
     --output out \
     .
