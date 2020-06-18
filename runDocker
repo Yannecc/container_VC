@@ -16,16 +16,11 @@ done
 CONTAINER_NAME=${IMG_TO_RUN}_${TAG_TO_USE}_${UID}_${GPU_TO_USE}
 
 
-IMG_HOME="/home/user"
-if [[ "$IMG_TO_RUN" == "base" ]]; then
-    IMG_HOME="/root"
-fi
-
 # Shared volumes
 
 PRETRAINED_MODELS_WEIGHTS="
-    -v $HOME/.cache/torch:$IMG_HOME/.cache/torch 
-    -v $HOME/.torch:$IMG_HOME/.torch
+    -v $HOME/.cache/torch:/home/user/.cache/torch 
+    -v $HOME/.torch:/home/user/.torch
 "
 
 DATASETS_FOLDERS="
@@ -40,19 +35,19 @@ DATASETS_FOLDERS="
 
 
 OPTIONAL_FOLDERS="
-    -v $HOME/alpine_intuition:$IMG_HOME/alpine_intuition
+    -v $HOME/alpine_intuition:/home/user/alpine_intuition:Z
     -v $HOME/.ssh:/home/user/.ssh
 "
 
 
 # Check if image exist 
 
-if [[ "$IMG_TO_RUN" == "dev" ]]; then
-    IMG_TO_RUN=${IMG_TO_RUN}_$UID
-fi
-
 if [[ $(lspci | grep -c "VGA.*AMD") -gt 0 ]]; then
     IMG_TO_RUN=${IMG_TO_RUN}_amd
+fi
+
+if [[ "$IMG_TO_RUN" == *dev* ]]; then
+    IMG_TO_RUN=${IMG_TO_RUN}_$UID
 fi
 
 IMG="alpineintuition/$IMG_TO_RUN:$TAG_TO_USE"
@@ -90,10 +85,11 @@ if [[ "$NUM_NVIDIA_GPUS" -gt 0 ]]; then
     RUNTIME="--runtime=nvidia --gpus $GPU"
 elif [[ "$NUM_AMD_GPUS" -gt 0 ]]; then 
     echo "Used AMD GPU(s): all (selecting GPU for AMD is not possible for now)"
+    VIDEO_GROUP_ID=$(awk -F\: '/video/ {print $3}' /etc/group)
     RUNTIME="
         --device=/dev/kfd
         --device=/dev/dri
-        --group-add video 
+        --group-add $VIDEO_GROUP_ID
     "
 else
     RUNTIME=""
