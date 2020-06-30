@@ -119,6 +119,7 @@ docker run \
     -it \
     --rm \
     --name $CONTAINER_NAME \
+    --workdir "${PWD/$USER/user}" \
     --ipc=host \
     --shm-size=30G \
     $USER_ID \
@@ -129,5 +130,4 @@ docker run \
     $PRETRAINED_MODELS_WEIGHTS \
     $DATASETS_FOLDERS \
     $OPTIONAL_FOLDERS \
-    $IMG \
-    /bin/zsh
+    $IMG
