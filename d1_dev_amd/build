@@ -1,6 +1,0 @@
-docker build \
-    --tag="alpineintuition/dev_amd_$UID:latest" \
-    --build-arg UID=$UID \
-    --build-arg GID=1010 \
-    --output out \
-    .

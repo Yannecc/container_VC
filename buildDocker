@@ -1,0 +1,63 @@
+#!/bin/bash
+
+IMG_TO_BUILD="dev"
+TAG_TO_USE="latest"
+while getopts "i:t:g:" opt; do
+  case ${opt} in
+    i ) IMG_TO_BUILD=$OPTARG;;
+    t ) TAG_TO_USE=$OPTARG;;
+    \?) echo "Wrong usage: buildDocker [-i] [-t]"; exit 1;;
+  esac
+done
+
+
+# Dockerfile
+
+if [[ "$IMG_TO_BUILD" == "base" ]]; then
+    DOCKERFILE="d0_base/Dockerfile"
+elif [[ "$IMG_TO_BUILD" == "dev" ]]; then
+  if [[ $(lspci | grep -c "VGA.*AMD") -gt 0 ]]; then
+    DOCKERFILE="d1_dev_amd/Dockerfile"
+  fi
+    DOCKERFILE="d1_dev/Dockerfile"
+else
+    echo "Invalid img to build. Available: base, dev"
+    exit 1
+fi
+
+if [ ! -f $DOCKERFILE ]; then
+    echo "Dockerfile '$DOCKERFILE' not found!"
+    exit 1
+fi
+
+
+# Determine tag
+
+if [[ "$IMG_TO_BUILD" == "dev" ]]; then
+    IMG_TO_BUILD=${IMG_TO_BUILD}_$UID
+fi
+IMG="alpineintuition/$IMG_TO_BUILD:$TAG_TO_USE"
+echo "Docker image to build: $IMG"
+
+
+# Additional args
+
+if [[ "$IMG_TO_BUILD" == *dev* ]]; then
+    USER_MAIL="$(grep $(whoami) user_info | tr -s " " | cut -d " " -f 2)"
+    USER_NAME="$(grep $(whoami) user_info | tr -s " " | cut -d " " -f 3)"
+    echo "> ${USER_NAME} (${USER_MAIL})"
+    
+    ADDITIONAL_ARGS="
+        --build-arg UID=$UID
+        --build-arg GID=1010
+        --build-arg USER_MAIL=$USER_MAIL
+        --build-arg USER_NAME=$USER_NAME
+    "
+fi
+
+
+docker build \
+    --tag=$IMG \
+    --file=$DOCKERFILE \
+    $ADDITIONAL_ARGS \
+    .
