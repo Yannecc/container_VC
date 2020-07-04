@@ -11,21 +11,21 @@ while getopts "i:t:g:" opt; do
 done
 
 
-# Dockerfile
+# Chose Dockerfile
 
 if [[ "$IMG_TO_BUILD" == "base" ]]; then
-    DOCKERFILE="d0_base/Dockerfile"
+    DOCKERFILE="d0.base.Dockerfile"
 elif [[ "$IMG_TO_BUILD" == "dev" ]]; then
   if [[ $(lspci | grep -c "VGA.*AMD") -gt 0 ]]; then
-    DOCKERFILE="d1_dev_amd/Dockerfile"
+    DOCKERFILE="d1.dev.amd.Dockerfile"
   fi
-    DOCKERFILE="d1_dev/Dockerfile"
+    DOCKERFILE="d1.dev.Dockerfile"
 else
     echo "Invalid img to build. Available: base, dev"
     exit 1
 fi
 
-if [ ! -f $DOCKERFILE ]; then
+if [ ! -f "$DOCKERFILE" ]; then
     echo "Dockerfile '$DOCKERFILE' not found!"
     exit 1
 fi
@@ -58,6 +58,6 @@ fi
 
 docker build \
     --tag=$IMG \
-    --file=$DOCKERFILE \
+    --file="$DOCKERFILE" \
     $ADDITIONAL_ARGS \
     .

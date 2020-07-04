@@ -15,12 +15,17 @@ done
 
 CONTAINER_NAME=${IMG_TO_RUN}_${TAG_TO_USE}_${UID}_${GPU_TO_USE}
 
+USER_NAME="user"
+if [[ "$IMG_TO_RUN" == *dev* ]]; then
+  USER_NAME="$(grep $(whoami) user_info | tr -s " " | cut -d " " -f 3)"
+fi
+
 
 # Shared volumes
 
 PRETRAINED_MODELS_WEIGHTS="
-    -v $HOME/.cache/torch:/home/user/.cache/torch 
-    -v $HOME/.torch:/home/user/.torch
+    -v $HOME/.cache/torch:/home/$USER_NAME/.cache/torch 
+    -v $HOME/.torch:/home/$USER_NAME/.torch
 "
 
 DATASETS_FOLDERS="
@@ -35,8 +40,8 @@ DATASETS_FOLDERS="
 
 
 OPTIONAL_FOLDERS="
-    -v $HOME/alpine_intuition:/home/user/alpine_intuition:Z
-    -v $HOME/.ssh:/home/user/.ssh
+    -v $HOME/alpine_intuition:/home/$USER_NAME/alpine_intuition:Z
+    -v $HOME/.ssh:/home/$USER_NAME/.ssh
 "
 
 
@@ -119,7 +124,7 @@ docker run \
     -it \
     --rm \
     --name $CONTAINER_NAME \
-    --workdir "${PWD/$USER/user}" \
+    --workdir "${PWD/$USER/$USER_NAME}" \
     --ipc=host \
     --shm-size=30G \
     $USER_ID \
