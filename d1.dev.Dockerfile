@@ -7,6 +7,14 @@ ARG USER_NAME
 # Create user and give permissions
 
 USER root
+
+RUN apt update --fix-missing && \
+    apt-get install -y libsndfile1 && \
+    apt-get install -y espeak && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
 RUN useradd --uid $UID --gid docker --shell /bin/zsh --create-home $USER_NAME && \
     chown -R $USER_NAME /opt
 WORKDIR /home/$USER_NAME

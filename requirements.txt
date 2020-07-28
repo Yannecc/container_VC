@@ -144,7 +144,7 @@ soupsieve==1.9.5
 tabulate==0.8.6
 tensorboard==2.0.2
 tensorboardX==2.0
-tensorflow==2.2.0
+#tensorflow==2.2.0
 tensorflow-estimator==2.0.1
 termcolor==1.1.0
 terminado==0.8.3
@@ -173,3 +173,25 @@ xgboost==0.90
 yacs==0.1.6
 yarl==1.4.2
 zipp==0.6.0
+
+# ADDS BY ME (pytorch transformerTTS)
+#falcon==1.2.0
+#inflect==0.2.5
+#librosa
+numba < 0.50
+#scipy==1.0.0
+#Unidecode==0.4.21
+#pandas
+#numpy
+#tensorboardX
+#tqdm
+
+# BY ME (TF transformerTTS)
+librosa>=0.7.1
+#numpy>=1.17.4
+phonemizer==2.1
+ruamel.yaml>=0.16.6
+Resemblyzer
+tensorflow==2.1.0
+#tqdm>=4.38.0
+num2words

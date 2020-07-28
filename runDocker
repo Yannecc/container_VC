@@ -129,7 +129,9 @@ docker run \
     --shm-size=30G \
     $USER_ID \
     -p 8888 \
+    -p 7580:7580 \
     -v $XSOCK:/tmp/.X11-unix \
+    -v $PWD:/home/user/dev \
     $SHELL_HISTORY \
     $RUNTIME \
     $PRETRAINED_MODELS_WEIGHTS \
