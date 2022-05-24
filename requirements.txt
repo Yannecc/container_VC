@@ -192,6 +192,6 @@ librosa>=0.7.1
 phonemizer==2.1
 ruamel.yaml>=0.16.6
 Resemblyzer
-tensorflow==2.1.0
+tensorflow==2.6.4
 #tqdm>=4.38.0
 num2words
